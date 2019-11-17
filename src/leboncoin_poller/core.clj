@@ -53,10 +53,4 @@
   [& args]
   ;;(complete)
   ;;(location)
-  (println (:ads (search-results)))
-  (while true
-  (for [ad (:ads (search-results))]
-    (println (str "Subject: " (:subject ad)))
-  )
-  (Thread/sleep 10000) 
-  ))
+  (println (:subject (first (:ads (search-results))))))
