@@ -1,5 +1,6 @@
 (ns leboncoin-poller.core
- (:require  [clojure.tools.logging :as log]
+  (:gen-class)
+  (:require [clojure.tools.logging :as log]
             [clojure.string :as str]
             [cheshire.core :as json]
             [clj-http.client :as http]) )
