@@ -53,4 +53,10 @@
   [& args]
   ;;(complete)
   ;;(location)
-  (println (:subject (first (:ads (search-results))))))
+  (while true 
+    (Thread/sleep 5000)
+    (doseq [ad (:ads (search-results))]
+    (println "Date: " (:first_publication_date ad))
+    (println "Ad: " (:subject ad) " ")
+    ))
+  )
