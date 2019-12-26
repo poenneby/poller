@@ -3,7 +3,8 @@
   (:require [clojure.tools.logging :as log]
             [clojure.string :as str]
             [cheshire.core :as json]
-            [clj-http.client :as http]) )
+            [clj-http.client :as http]
+            [ring.adapter.jetty :refer [run-jetty]]))
 
 (defonce my-cs (clj-http.cookies/cookie-store))
 
@@ -49,11 +50,15 @@
 (defn search-results []
   (json/parse-string (search) true))
 
+(defn handler [request]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body "Hello World"})
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  ;;(complete)
-  ;;(location)
+ (run-jetty handler {:port (Integer/valueOf (or (System/getenv "port") "3000")) :join? false}) 
   (while true 
     (Thread/sleep 5000)
     (doseq [ad (:ads (search-results))]

@@ -7,7 +7,10 @@
                  [org.clojure/tools.logging "0.4.1"]
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.9.0"]
-                 [clj-http "2.0.0"]                 ]
+                 [clj-http "2.0.0"]
+                 [ring/ring-core "1.6.3"]
+                 [ring/ring-jetty-adapter "1.6.3"]
+                 ]
   :main ^:skip-aot leboncoin-poller.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
