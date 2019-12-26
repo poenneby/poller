@@ -58,7 +58,7 @@
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
- (run-jetty handler {:port (Integer/valueOf (or (System/getenv "port") "3000")) :join? false}) 
+ (run-jetty handler {:port (Integer/valueOf (or (System/getenv "PORT") "3000")) :join? false}) 
   (while true 
     (Thread/sleep 5000)
     (doseq [ad (:ads (search-results))]
