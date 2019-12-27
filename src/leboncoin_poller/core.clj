@@ -60,7 +60,7 @@
   [& args]
  (run-jetty handler {:port (Integer/valueOf (or (System/getenv "PORT") "3000")) :join? false}) 
   (while true 
-    (Thread/sleep 5000)
+    (Thread/sleep 60000)
     (doseq [ad (:ads (search-results))]
     (println "Date: " (:first_publication_date ad))
     (println "Ad: " (:subject ad) " ")
