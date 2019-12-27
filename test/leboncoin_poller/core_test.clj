@@ -1,7 +1,7 @@
 (ns leboncoin-poller.core-test
-  (:require [clojure.test :refer :all]
-            [leboncoin-poller.core :refer :all]))
+  (:require [leboncoin-poller.core :refer :all]
+            [midje.sweet :refer :all]
+            [clojure.string :as str]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(facts "about `split`"
+  (str/split "a/b/c" #"/") => ["a" "b" "c"])
