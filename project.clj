@@ -10,6 +10,8 @@
                  [clj-http "2.0.0"]
                  [ring/ring-core "1.6.3"]
                  [ring/ring-jetty-adapter "1.6.3"]
+                 [com.draines/postal "2.0.3"]
+                 [environ "1.1.0"]
                  ]
   :main ^:skip-aot leboncoin-poller.core
   :target-path "target/%s"
