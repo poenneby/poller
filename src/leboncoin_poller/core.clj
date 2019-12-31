@@ -1,15 +1,20 @@
 (ns leboncoin-poller.core
   (:gen-class)
-  (:require [clojure.tools.logging :as log]
+  (:require [leboncoin-poller.mailer :as m]
+            [clojure.tools.logging :as log]
             [clojure.string :as str]
             [cheshire.core :as json]
             [clj-http.client :as http]
-            [ring.adapter.jetty :refer [run-jetty]]))
+            [ring.adapter.jetty :refer [run-jetty]]
+            [environ.core :refer [env]]))
 
 (defonce my-cs (clj-http.cookies/cookie-store))
 
-(def search-body 
-  "{\"limit\":35,\"limit_alu\":3,\"filters\":{\"category\":{},\"enums\":{\"ad_type\":[\"offer\"]},\"location\":{\"locations\":[]},\"keywords\":{\"text\":\"RFP1000\"},\"ranges\":{}},\"user_id\":\"83373d7d-06a5-4505-bf0f-fec08f928efc\",\"store_id\":\"6348695\"}")
+(def search-keywords (env :search-keywords))
+
+(defn search-body [search-keywords]
+  (str "{\"limit\":35,\"limit_alu\":3,\"filters\":{\"category\":{},\"enums\":{\"ad_type\":[\"offer\"]},\"location\":{\"locations\":[]},\"keywords\":{\"text\":\"" search-keywords "\"},\"ranges\":{}},\"user_id\":\"83373d7d-06a5-4505-bf0f-fec08f928efc\",\"store_id\":\"6348695\"}"
+  ))
 
 (def h {
         "Accept" "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
@@ -26,8 +31,8 @@
         })
 
 (defn search []
-  (log/info "Search for RFPlayer")
-  (:body (http/post "https://api.leboncoin.fr/finder/search" {:body search-body
+  (log/info "Search for " search-keywords)
+  (:body (http/post "https://api.leboncoin.fr/finder/search" {:body (search-body search-keywords)
                                                               :insecure?           true
                                                               :headers h
                                                               :content-type :json
@@ -37,15 +42,12 @@
   (json/parse-string (search) true))
 
 (defn handler [request]
-  (doseq [ad (:ads (search-results))]
-    (println "Date: " (:first_publication_date ad))
-    (println "Ad: " (:subject ad) " ")
-    )
+  (m/send-message "New results" (apply str (let [ads (:ads (search-results))]
+    (for [ad ads] (str "First published: " (:first_publication_date ad) "\nLast updated: " (:index_date ad) "\nSubject: " (:subject ad) "\n\n")))))
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body "Checked"})
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
  (run-jetty handler {:port (Integer/valueOf (or (System/getenv "PORT") "3000")) :join? false}))
